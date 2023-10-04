@@ -1,0 +1,635 @@
+-- *******************************************************************************
+-- *                                         *                                  
+-- *       BAZY DANYCH II - PROJEKT 		 * 	 GRUPA: 		               
+-- *                                         *                                  
+-- *******************************************************************************
+-- * 																		     
+-- *   Nazwisko i imię: Danicki Mirosław                                                        
+-- * 																		     
+-- *******************************************************************************
+-- * 																		     
+-- *   Nr indeksu: 95318                                                              
+-- * 																		     
+-- *******************************************************************************
+-- *******************************************************************************
+-- * 																		     
+-- *   Temat projektu: Siłownia                                                           
+-- * 																		     
+-- *******************************************************************************
+
+
+
+
+-- -------------------------------------------------------------------------------
+-- TWORZENIE STRUKTURY BAZY DANYCH                                            
+-- -------------------------------------------------------------------------------
+
+
+-- -----------------------------------------------------
+-- Table `Adresy`
+-- -----------------------------------------------------
+CREATE TABLE Adresy (
+  id_adres NUMBER(4) CONSTRAINT pk_adres PRIMARY KEY,
+  miasto VARCHAR2(45),
+  miejscowosc VARCHAR2(45),
+  wojewodztwo VARCHAR2(45),
+  powiat VARCHAR2(45) ,
+  kod_pocztowy VARCHAR2(45) ,
+  ulica VARCHAR2(45) ,
+  nr_domu VARCHAR2(45) ,
+  nr_lokalu VARCHAR2(45) 
+  );
+
+
+-- -----------------------------------------------------
+-- `Kontakty`
+-- -----------------------------------------------------
+CREATE TABLE Kontakty (
+  id_kontakt NUMBER(4) CONSTRAINT pk_kontakt PRIMARY KEY,
+  nr_tel_1 VARCHAR2(45) ,
+  nr_tel_2 VARCHAR(45) ,
+  email VARCHAR(45) ,
+  www VARCHAR(45) 
+  );
+
+-- -----------------------------------------------------
+-- Table `Trener`
+-- -----------------------------------------------------
+CREATE TABLE  Trener (
+  ID_trenera NUMBER(4) CONSTRAINT pk_trener PRIMARY KEY,
+  Imię VARCHAR2(45) NULL,
+  Nazwisko VARCHAR2(45) NULL,
+  id_kontakt NUMBER(4)CONSTRAINT fk_kontakt2 REFERENCES Kontakty(id_kontakt) ON DELETE SET NULL,
+  id_adres NUMBER(4) CONSTRAINT fk_adres2 REFERENCES Adresy(id_adres) ON DELETE SET NULL
+);
+    
+
+
+-- -----------------------------------------------------
+-- Table `Grafik`
+-- -----------------------------------------------------
+CREATE TABLE  Grafik (
+  Lp Number(4) CONSTRAINT pk_grafik PRIMARY KEY,
+  ID_trenera NUMBER(4) CONSTRAINT fk_trener REFERENCES Trener(ID_trenera) ON DELETE SET NULL,
+  Godz_rozpoczecia Number(4,2),
+  Godz_zakonczenia Number(4,2)
+);
+  
+
+-- -----------------------------------------------------
+-- Table `Ćwiczenia`
+-- -----------------------------------------------------
+CREATE TABLE  Cwiczenia (
+  ID_cwiczen NUMBER(4) CONSTRAINT pk_cwiczenia PRIMARY KEY,
+  Cwiczenie VARCHAR2(150),
+  Partia_miesni VARCHAR2(45),
+  Typ VARCHAR2(45),
+  Sprzet VARCHAR2(45),
+  Trudnosc VARCHAR2(45)
+  );
+
+
+-- -----------------------------------------------------
+-- Table `Cennik`
+-- -----------------------------------------------------
+CREATE TABLE Cennik (
+  ID_cennika NUMBER(4) CONSTRAINT pk_cennik PRIMARY KEY,
+  Karnet VARCHAR2(45),
+  Cena VARCHAR2(45) 
+  );
+
+
+
+-- -----------------------------------------------------
+-- Table `Klient`
+-- -----------------------------------------------------
+CREATE TABLE  Klient (
+  ID_klienta NUMBER(4) CONSTRAINT pk_klient PRIMARY KEY,
+  Imie VARCHAR2(45) ,
+  Nazwisko VARCHAR2(45),
+  Karnet NUMBER(4) CONSTRAINT fk_karnet REFERENCES Cennik(ID_cennika) ON DELETE SET NULL,
+  Trener NUMBER(4) CONSTRAINT fk_trener2 REFERENCES Trener(ID_trenera) ON DELETE SET NULL,
+  id_kontakt NUMBER(4)CONSTRAINT fk_kontakt REFERENCES Kontakty(id_kontakt) ON DELETE SET NULL,
+  id_adres NUMBER(4)CONSTRAINT fk_adres REFERENCES Adresy(id_adres) ON DELETE SET NULL,
+  waznosc_karnetu DATE
+  );
+ 
+-- -----------------------------------------------------
+-- Table `Plan_treningu`
+-- -----------------------------------------------------
+CREATE TABLE  Plan_treningu (
+  ID_planu_treningu NUMBER(4) CONSTRAINT pk_plan_treningu PRIMARY KEY,
+  ID_klienta NUMBER(4)CONSTRAINT fk_klient REFERENCES Klient(ID_klienta) ON DELETE SET NULL 
+ 
+  );
+-- -----------------------------------------------------
+-- Table `Plan_ćwiczeń`
+-- -----------------------------------------------------
+CREATE TABLE  Plan_cwiczen (
+  ID_planu NUMBER(4) CONSTRAINT pk_plan_cwiczen PRIMARY KEY,
+  Dzien VARCHAR2(45) ,
+  Ilosc_seri NUMBER(2),
+  Cwiczenie NUMBER (4) CONSTRAINT fk_cwiczenia REFERENCES Cwiczenia(ID_cwiczen) ON DELETE SET NULL,
+  ID_planu_treningu NUMBER(4)CONSTRAINT fk_plan_cwiczen REFERENCES Plan_treningu(ID_planu_treningu) ON DELETE SET NULL,
+  Ilosc_powtorzen NUMBER(3)
+  );
+
+
+
+-- -----------------------------------------------------
+-- `Rejestr_wejść`
+-- -----------------------------------------------------
+CREATE TABLE  Rejestr_wejsc_wyjsc (
+  idRejestr_wejsc NUMBER(4) CONSTRAINT pk_rejestr_wejsc PRIMARY KEY,
+  Id_osoby NUMBER(4) CONSTRAINT fk_osoby REFERENCES Klient(ID_klienta) ON DELETE SET NULL,
+  Data_Wejsca TIMESTAMP, Data_wyjscia TIMESTAMP
+  );
+
+
+
+
+-- -------------------------------------------------------------------------------
+-- POLECENIA:   5 X INSERT  DO WSZYSTKICH TABEL                                               
+-- -------------------------------------------------------------------------------
+
+
+-- -----------------------------------------------------
+-- insert into Adresy
+-- -----------------------------------------------------
+
+INSERT ALL
+    INTO Adresy  VALUES (1, 'Opole',NULL,'Opolskie','Opolski','45-111','MIKOLAJCZYKA','5',NULL)
+    INTO Adresy  VALUES (2, 'Chełm',NULL,'Chełmskie','Chełmski','22-100','PARTYZANTÓW','54',NULL)
+    INTO Adresy  VALUES (3, 'Chełm',NULL,'Chełmskie','Chełmski','22-100','OGRODOWA','22',NULL)
+    INTO Adresy  VALUES (4, 'Chełm',NULL,'Chełmskie','Chełmski','22-100','OGRODOWA','25',NULL)
+    INTO Adresy  VALUES (5, 'Chełm',NULL,'Chełmskie','Chełmski','22-100','LWOWSKA','231',NULL)
+    INTO Adresy  VALUES (6, 'Chełm',NULL,'Chełmskie','Chełmski','22-100','LWOWSKA','112',NULL)
+    INTO Adresy  VALUES (7, 'Chełm',NULL,'Chełmskie','Chełmski','22-100','LWOWSKA','66',NULL)
+    INTO Adresy  VALUES (8, 'Chełm',NULL,'Chełmskie','Chełmski','22-100','LWOWSKA','66',NULL)
+    INTO Adresy  VALUES (9, 'Chełm',NULL,'Chełmskie','Chełmski','22-100','LWOWSKA','54',NULL)
+    INTO Adresy  VALUES (10, 'Chełm',NULL,'Chełmskie','Chełmski','22-100','OGRODOWA','42',NULL)
+    INTO Adresy  VALUES (11, 'Chełm',NULL,'Chełmskie','Chełmski','22-100','OGRODOWA','212',NULL)
+    INTO Adresy  VALUES (12, 'Chełm',NULL,'Chełmskie','Chełmski','22-100','PARTYZANTÓW','45',NULL)
+    INTO Adresy  VALUES (13, 'Chełm',NULL,'Chełmskie','Chełmski','22-100','PARTYZANTÓW','231',NULL)
+    INTO Adresy  VALUES (14, 'Chełm',NULL,'Chełmskie','Chełmski','22-100','PARTYZANTÓW','213',NULL)
+    INTO Adresy  VALUES (15, 'Chełm',NULL,'Chełmskie','Chełmski','22-100','WIEJSKA','92',NULL)
+SELECT * FROM dual;
+
+-- -----------------------------------------------------
+-- insert into Kontakty
+-- -----------------------------------------------------
+
+INSERT ALL
+    INTO Kontakty  VALUES (1,'+48 704505202',NULL,'obrowolsky76@gmail.com',NULL)
+    INTO Kontakty  VALUES (2,'+48 602502443',NULL,'ankiel102@o2.pl',NULL)
+    INTO Kontakty  VALUES (3,'+48 504232817',NULL,'Berder22@wp.pl',NULL)
+    INTO Kontakty  VALUES (4,'+48 602322791',NULL,'wiolkaW12@o2.pl',NULL)
+    INTO Kontakty  VALUES (5,'+48 601754392',NULL,'KowalskiJan123@gmail.com',NULL)
+    INTO Kontakty  VALUES (6,'+48 603446167',NULL,'Paweł82@wp.pl',NULL)
+    INTO Kontakty  VALUES (7,'+48 504552643',NULL,'Kozak1821@o2.pl',NULL)
+    INTO Kontakty  VALUES (8,'+48 505603423',NULL,'Wera102@hotmail.com',NULL)
+    INTO Kontakty  VALUES (9,'+48 603445931',NULL,'Dąbrowski923@wp.pl',NULL)
+    INTO Kontakty  VALUES (10,'+48 534298341',NULL,'zięba996@wp.pl',NULL)
+    INTO Kontakty  VALUES (11,'+48 764321412',NULL,'Omlecik98@gmail.com',NULL)
+    INTO Kontakty  VALUES (12,'+48 545092420',NULL,'czarny 94@wp.pl',NULL)
+    INTO Kontakty  VALUES (13,'+48 798034219',NULL,'wera767@wp.pl',NULL)
+    INTO Kontakty  VALUES (14,'+48 233232',NULL,'p@wp.pl',NULL)
+
+	SELECT * FROM dual;
+	
+-- -----------------------------------------------------
+-- insert into Cennik
+-- -----------------------------------------------------
+
+INSERT ALL
+    INTO Cennik  VALUES (1,'karnet 3-miesięczny','260')
+    INTO Cennik  VALUES (2,'karnet 6-miesięczny','460')
+    INTO Cennik  VALUES (3,'karnet 12-miesięczny','800')
+    INTO Cennik  VALUES (4,'karnet na 6 wejść','79')
+    INTO Cennik  VALUES (5,'karnet na 8 wejść','95')
+    INTO Cennik  VALUES (6,'jednorazowe wejście','18')
+    INTO Cennik  VALUES (7,'karnet 1-miesięczny','100')
+    
+
+	SELECT * FROM dual;
+	
+-- -----------------------------------------------------
+-- insert into Cwiczenia
+-- -----------------------------------------------------
+
+INSERT ALL
+    INTO Cwiczenia  VALUES (1,'Wspięcia na palce stojąc ze sztangą na karku','Łydki','na siłę','sztanga','początkujący')
+    INTO Cwiczenia  VALUES (2,'Wspięcie na palce ze sztangielką jednonóż','Łydki','na siłę','sztanga','początkujący')
+    INTO Cwiczenia  VALUES (3,'Ośle wspięcia','Łydki','na siłę, na rzeźbę','Brak','początkujący')
+    INTO Cwiczenia  VALUES (4,'Wspięcia na palce siedząc z hantlami','Łydki','na siłę, na rzeźbę','hantle, ławka pozioma','początkujący')
+    INTO Cwiczenia  VALUES (5,'Wspięcie na palcach ułożonymi na zewnątrz','Łydki','na siłę, na rzeźbę','suwnica skośna','początkujący')
+    INTO Cwiczenia  VALUES (6,'Podciąganie hantli wzdłuż tułowia stojąc','Mięsień czworoboczny','na siłę, na rzeźbę','hantle','początkujący')
+    INTO Cwiczenia  VALUES (7,'Szrugsy z hantlami w pozycji siedzącej','Mięsień czworoboczny','na siłę','hantle','początkujący')
+    INTO Cwiczenia  VALUES (8,'Szrugsy ze sztangą z tyłu','Mięsień czworoboczny','na siłę','sztanga','początkujący')
+    INTO Cwiczenia  VALUES (9,'Szrugsy ze sztangą z przodu','Mięsień czworoboczny','na siłę, na rzeźbę','sztanga','początkujący')
+    INTO Cwiczenia  VALUES (10,'Wykroki w przód','Mięsień czworogłowy uda','na siłę, na rzeźbę','brak','początkujący')
+    INTO Cwiczenia  VALUES (11,'p ze sztangą wspartą na barkach','Mięsień czworogłowy uda','na siłę','sztanga','zaawansowany')
+    INTO Cwiczenia  VALUES (12,'Przysiady ze sztangą na jednej nodze','Mięsień czworogłowy uda','na siłę','sztanga','zaawansowany')
+    INTO Cwiczenia  VALUES (13,'Przysiady sumo z hantlą','Mięsień czworogłowy uda','na siłę','hantle','początkujący')
+    INTO Cwiczenia  VALUES (14,'Wejścia na podwyższenia z hantlami','Mięsień czworogłowy uda','na siłę','hantle','średniozaawansowany')
+    INTO Cwiczenia  VALUES (15,'Wykroki w bok','Mięsień czworogłowy uda','na siłę','brak','początkujący')
+    INTO Cwiczenia  VALUES (16,'Unoszenie nóg w zwisie','Mięśnie brzucha','na siłę, na rzeźbę','drążek','zaawansowany')
+    INTO Cwiczenia  VALUES (17,'Skręty nóg w leżeniu','Mięśnie brzucha','na siłę','brak','początkujący')
+    INTO Cwiczenia  VALUES (18,'Siady ze skrętem tułowia','Mięśnie brzucha','na siłę','brak','początkujący')
+    INTO Cwiczenia  VALUES (19,'Wznosy tułowia z nogami w górze','Mięśnie brzucha','na siłę, na rzeźbę','brak','początkujący')
+    INTO Cwiczenia  VALUES (20,'Skłony boczne','Mięśnie brzucha','na siłę, na rzeźbę','ławka skośna','początkujący')
+    INTO Cwiczenia  VALUES (21,'Przyciąganie nóg do klatki piersiowej na ławce skośnej','Mięśnie brzucha','na siłę, na rzeźbę','ławka skośna','początkujący')
+    INTO Cwiczenia  VALUES (22,'Skłony boczne na ławce skośnej','Mięśnie brzucha','na siłę, na rzeźbę','ławka skośna','początkujący')
+    INTO Cwiczenia  VALUES (23,'Uginanie nadgarstków w podchwycie','Mięśnie przedramienia','na siłę','sztanga','początkujący')
+    INTO Cwiczenia  VALUES (24,'Uginanie nadgarstków w nachwycie','Mięśnie przedramienia','na siłę','sztanga','początkujący')
+    INTO Cwiczenia  VALUES (25,'Uginanie przedramion w nachwycie','Mięśnie przedramienia','na siłę','hantle','początkujący')
+    INTO Cwiczenia  VALUES (26,'Uginanie nadgarstków w podchwycie za plecami','Mięśnie przedramienia','na siłę','sztanga','początkujący')
+    INTO Cwiczenia  VALUES (27,'noszenie przedramienia jednorącz w nachwycie','Mięśnie przedramienia','na siłę','hantle','początkujący')
+    INTO Cwiczenia  VALUES (28,'Uginanie przedramion w oparciu o ławkę w chwycie młotkowym','Mięśnie przedramienia','na siłę','hantle, modlitewnik','początkujący')
+    INTO Cwiczenia  VALUES (29,'Prostowanie przedramion w leżeniu na ławce poziomej','triceps ','na siłę, na rzeźbę','hantle, ławka pozioma','średniozaawansowany')
+    INTO Cwiczenia  VALUES (30,'Wyciskanie francuskie sztangielki oburącz na ławce skośnej','triceps ','na siłę, na rzeźbę','hantle, ławka pozioma','początkujący')
+    
+    
+
+	SELECT * FROM dual;
+	
+	-- -----------------------------------------------------
+-- insert into Trener
+-- -----------------------------------------------------
+
+INSERT ALL
+    INTO Trener  VALUES (1,'Lukasz','Dobrowolski',1,1)
+    INTO Trener  VALUES (2,'Jan','Zniszczol',2,2)
+    INTO Trener  VALUES (3,'Dominik','Bernartowicz',3,3)
+    INTO Trener  VALUES (4,'Monika','Willas',4,4)
+   
+	SELECT * FROM dual;
+-- -----------------------------------------------------
+-- insert into Grafik
+-- -----------------------------------------------------
+
+INSERT ALL
+    INTO Grafik VALUES (1,1,8.00,16.00)
+    INTO Grafik VALUES (2,2,9.00,17.00)
+    INTO Grafik VALUES (3,4,12.00,20.00)
+    INTO Grafik VALUES (4,3,10.00,18.00)
+    
+	SELECT * FROM dual;
+
+-- -----------------------------------------------------
+-- insert into Klient
+-- -----------------------------------------------------
+
+INSERT ALL
+    INTO Klient VALUES (1,'Jan','Kowalski',1,1,5,5,TO_DATE('2019/01/03 21:02:44', 'yyyy/mm/dd hh24:mi:ss'))
+    INTO Klient VALUES (2,'Paweł','Auditore',5,1,6,6,TO_DATE('2019/02/03 21:02:44', 'yyyy/mm/dd hh24:mi:ss'))
+    INTO Klient VALUES (3,'Wioletta','Kozak',2,4,7,7,TO_DATE('2019/01/02 21:02:44', 'yyyy/mm/dd hh24:mi:ss'))
+    INTO Klient VALUES (4,'Weronika','Michalczyk',7,4,8,8,TO_DATE('2019/03/03 21:02:44', 'yyyy/mm/dd hh24:mi:ss'))
+    INTO Klient VALUES (5,'Kacper','Dąbrowski',7,2,9,9,TO_DATE('2019/01/14 21:02:44', 'yyyy/mm/dd hh24:mi:ss'))
+    INTO Klient VALUES (6,'Przemysław','Zięba',7,2,10,10,TO_DATE('2019/01/22 21:02:44', 'yyyy/mm/dd hh24:mi:ss'))
+    INTO Klient VALUES (7,'Dorian','Omlet',3,3,11,11,TO_DATE('2019/01/15 21:02:44', 'yyyy/mm/dd hh24:mi:ss'))
+    INTO Klient VALUES (8,'Łukasz','Czarnecki',5,3,12,12,TO_DATE('2019/02/12 21:02:44', 'yyyy/mm/dd hh24:mi:ss'))
+    INTO Klient VALUES (9,'Weronika','Dąbrowska',7,4,13,13,TO_DATE('2019/03/13 21:02:44', 'yyyy/mm/dd hh24:mi:ss'))
+    INTO Klient VALUES (10,'Alicja','Piotrowska',3,2,14,14,TO_DATE('2019/01/18 21:02:44', 'yyyy/mm/dd hh24:mi:ss'))
+
+	SELECT * FROM dual;
+
+-- -----------------------------------------------------
+-- insert into Plan_treningu
+-- -----------------------------------------------------
+
+INSERT ALL
+    INTO Plan_treningu VALUES (1,1)
+    INTO Plan_treningu VALUES (2,2)
+    INTO Plan_treningu VALUES (3,3)
+    INTO Plan_treningu VALUES (4,4)
+    INTO Plan_treningu VALUES (5,5)
+    
+	SELECT * FROM dual;
+
+-- -----------------------------------------------------
+-- insert into Plan_cwiczen
+-- -----------------------------------------------------
+
+INSERT ALL
+    INTO Plan_cwiczen VALUES (1,'PN',3,3,1,15 )
+    INTO Plan_cwiczen VALUES (2,'PN',3,1,2,10 )
+    INTO Plan_cwiczen VALUES (3,'ŚR',2,10,1,25 )
+    INTO Plan_cwiczen VALUES (4,'WT',3,17,2,30 )
+    INTO Plan_cwiczen VALUES (5,'PT',3,17,1,25 )
+    
+	SELECT * FROM dual;
+	-- -----------------------------------------------------
+-- insert into Rejestr_wejsc_wyjsc
+-- -----------------------------------------------------
+
+INSERT ALL
+    INTO Rejestr_wejsc_wyjsc VALUES (1,1,TO_TIMESTAMP( '2019-03-02 14:53:20','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP( '2019-03-02 16:33:20','YYYY-MM-DD HH24:MI:SS') )
+    INTO Rejestr_wejsc_wyjsc VALUES (2,5,TO_TIMESTAMP( '2018-12-22 08:52:22','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP( '2018-12-22 09:44:22','YYYY-MM-DD HH24:MI:SS') )
+    INTO Rejestr_wejsc_wyjsc VALUES (3,7,TO_TIMESTAMP( '2018-07-09 12:43:54','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP( '2018-07-09 16:13:54','YYYY-MM-DD HH24:MI:SS') )
+    INTO Rejestr_wejsc_wyjsc VALUES (4,4,TO_TIMESTAMP( '2019-04-10 10:05:10','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP( '2019-04-10 12:35:10','YYYY-MM-DD HH24:MI:SS') )
+    INTO Rejestr_wejsc_wyjsc VALUES (5,1,TO_TIMESTAMP( '2019-01-12 09:06:02','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP( '2019-01-12 12:44:02','YYYY-MM-DD HH24:MI:SS') )
+    INTO Rejestr_wejsc_wyjsc VALUES (6,3,TO_TIMESTAMP( '2018-09-07 15:32:50','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP( '2018-09-07 19:01:50','YYYY-MM-DD HH24:MI:SS') )
+    INTO Rejestr_wejsc_wyjsc VALUES (7,6,TO_TIMESTAMP( '2018-02-25 18:43:25','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP( '2018-02-25 20:43:25','YYYY-MM-DD HH24:MI:SS') )
+    INTO Rejestr_wejsc_wyjsc VALUES (8,8,TO_TIMESTAMP( '2019-04-07 16:53:20','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP( '2019-04-07 18:53:20','YYYY-MM-DD HH24:MI:SS') )
+    INTO Rejestr_wejsc_wyjsc VALUES (9,1,TO_TIMESTAMP( '2019-04-09 19:01:33','YYYY-MM-DD HH24:MI:SS'),TO_TIMESTAMP( '2019-04-09 20:51:33','YYYY-MM-DD HH24:MI:SS') )
+    
+    
+	SELECT * FROM dual;
+
+
+
+
+-- -------------------------------------------------------------------------------
+-- POLECENIA:   3 X SELECT  ( PRZYKŁADY Z JOIN NA MIN. 3 TABELACH)                                                   
+-- -------------------------------------------------------------------------------
+
+-- -------------------------------------------------------------------------------
+-- wyswietlenie łącznej ilosci powtórzeń wykonanych cwiczeń w tygodniu przez klientów,
+-- oraz imienia i nazwiska tych klientów
+-- -------------------------------------------------------------------------------
+
+
+SELECT SUM(c.ilosc_powtorzen)*SUM(c.ilosc_seri) "ilość_powtórzen_w_tygodniu",  k.nazwisko, k.imie
+from plan_cwiczen c
+INNER JOIN plan_treningu t ON(c.id_planu_treningu=t.id_planu_treningu)
+INNER JOIN klient k ON (t.id_klienta=k.id_klienta)
+GROUP BY k.nazwisko, k.imie;
+
+---------------------------------------------------
+select k.nazwisko, k.imie, trener.nazwisko as "Nazwisko trenera", substr(cw.cwiczenie,0,40) as "Nazwa ćwiczenia", c.ilosc_powtorzen,c.ilosc_seri
+from cwiczenia cw
+INNER JOIN plan_cwiczen c on(cw.id_cwiczen=c.cwiczenie)
+INNER JOIN plan_treningu t on(c.id_planu_treningu=t.id_planu_treningu)
+INNER JOIN klient k ON (t.id_klienta=k.id_klienta)
+INNER JOIN trener ON (k.trener = trener.id_trenera);
+---------------------------------------------------------
+
+--Wyświetlenie nazwiska klienta z tabeli Klient oraz ulicy i nr domu z tabeli Adresy
+-- oraz nr_tel z tabeli Kontakty
+SELECT Klient.nazwisko,  Adresy.ulica, Adresy.nr_domu, Kontakty.nr_tel_1
+FROM klient inner join Adresy ON  klient.id_adres =adresy.id_adres inner join kontakty ON klient.id_kontakt = kontakty.id_kontakt;
+
+--------------------------------------------------
+-- Wyświetlenie nazwiska trenera z tabeli Trener oraz godziny rozpoczęcia
+-- oraz godziny zakończenia pracy z tabeli Grafik
+SELECT Trener.nazwisko, Grafik.godz_rozpoczecia,Grafik.godz_zakonczenia
+FROM Grafik inner join trener ON grafik.id_trenera=trener.id_trenera;
+
+------------------------------------------------
+
+-- Wyświetlenie nazwy ćwiczeń z tabeli Cwiczenia,
+-- których poziom trudności jest początkujący oraz sprzet do ćwiczenia wynosi „brak”
+SELECT cwiczenie FROM(SELECT * FROM cwiczenia WHERE cwiczenia.trudnosc='początkujący' AND cwiczenia.sprzet='brak');
+
+-------------------------------------------------
+
+-- Wyświetlenie nazwy miasta i ulicy z tabeli Adresy gdzie numer domu jest mniejszy od 100 i id jest większe od 5 
+SELECT Miasto,ulica FROM(SELECT * FROM adresy WHERE adresy.nr_domu<100 AND adresy.id_adres >5);
+
+--------------------------------------------------
+
+SELECT email FROM(SELECT * FROM kontakty WHERE nr_tel_1 LIKE '+48 601754392');
+
+--------------------------------------------------
+SELECT Klient.imie,Klient.nazwisko,  Cennik.Karnet
+FROM klient inner join Cennik ON  klient.karnet=cennik.id_cennika
+
+--------------------------------------------------
+SELECT COUNT(*) "ilość_adresów_z_danej_ulicy" , Ulica FROM 
+adresy GROUP BY ulica;
+
+-----------------------------------------------------
+
+SELECT EXTRACT(HOUR FROM data_wyjscia) - EXTRACT(HOUR FROM data_wejsca) as "ilosc godzin na silowni", klient.nazwisko,klient.imie
+from rejestr_wejsc_wyjsc
+inner join klient on klient.id_klienta=rejestr_wejsc_wyjsc.id_osoby ;
+
+-----------------------------------------------------
+
+SELECT LTRIM(nr_tel_1,'+48') FROM kontakty;
+
+-----------------------------------------------------
+
+SELECT REPLACE (imie, 'Weronika' ,'Paulina') FROM Klient;
+
+------------------------------------------------------
+
+SELECT COUNT(*) "Ilosc_cwiczen",  trudnosc FROM Cwiczenia GROUP BY trudnosc;
+
+-------------------------------------------------------
+
+SELECT email, nr_tel_1 FROM kontakty WHERE nr_tel_1 LIKE '+48 603%';
+
+-------------------------------------------------------
+
+SELECT cwiczenie FROM cwiczenia WHERE trudnosc='zaawansowany';
+
+-------------------------------------------------------
+
+-- -------------------------------------------------------------------------------
+-- POLECENIA:   3 X UPDATE  DO WSZYSTKICH TABEL                                                    
+-- -------------------------------------------------------------------------------
+
+UPDATE adresy SET miasto='Opole', powiat = 'Opolski', wojewodztwo='Opolskie', kod_pocztowy='45-111'
+WHERE id_adres=2;
+
+UPDATE adresy SET ulica='Kwiatowa'
+WHERE kod_pocztowy='22-100' AND ulica='WIEJSKA' ;
+
+UPDATE adresy SET nr_domu=null, nr_lokalu='212'
+WHERE kod_pocztowy='22-100' AND nr_domu='212' ;
+
+------------------------------------------------------
+
+UPDATE cennik SET cena='120'
+WHERE karnet='karnet 1-miesięczny';
+
+UPDATE cennik SET karnet='karnet na 5 wejsc'
+WHERE cena='79';
+
+UPDATE cennik SET karnet=null, cena=null
+WHERE id_cennika=6;
+
+-------------------------------------------------
+
+UPDATE cwiczenia SET trudnosc='Beginner'
+WHERE trudnosc='początkujący';
+
+UPDATE cwiczenia SET sprzet='Bez sprzetu'
+WHERE sprzet='brak';
+
+UPDATE cwiczenia SET cwiczenie='Sklony tulowia'
+WHERE id_cwiczen=20;
+
+-------------------------------------------------
+
+UPDATE grafik SET godz_rozpoczecia=9
+WHERE godz_rozpoczecia=8;
+
+UPDATE grafik SET godz_zakonczenia=19
+WHERE godz_zakonczenia=20;
+
+UPDATE grafik SET godz_rozpoczecia=8
+WHERE id_trenera=4;
+
+-------------------------------------------------
+
+UPDATE klient SET trener=1
+WHERE trener=4;
+
+UPDATE klient SET karnet=1
+WHERE id_klienta=6;
+
+update klient set nazwisko='Zreba'
+where nazwisko='Zięba';
+
+--------------------------------------------------
+
+update kontakty set nr_tel_2='+48 812357546'
+where id_kontakt=5;
+
+update kontakty set email='pawelek@o2.pl'
+where id_kontakt=6;
+
+update kontakty set nr_tel_1='zly numer'
+where LENGTH(nr_tel_1) < 11 ;
+
+---------------------------------------------------
+
+update plan_cwiczen set ilosc_seri=2
+where id_planu=2 ;
+
+update plan_cwiczen set dzien='CZ'
+where id_planu=4 ;
+
+update plan_cwiczen set ilosc_powtorzen=15
+where id_planu=5 ;
+
+--------------------------------------------------
+update plan_treningu set id_klienta=3
+where id_planu_treningu=2 ;
+
+update plan_treningu set id_klienta=4
+where id_planu_treningu=3 ;
+
+update plan_treningu set id_klienta=5
+where id_planu_treningu=4 ;
+
+---------------------------------------------------
+update rejestr_wejsc_wyjsc set id_osoby=2
+where idrejestr_wejsc=7 ;
+
+update rejestr_wejsc_wyjsc set id_osoby=3
+where idrejestr_wejsc=5 ;
+
+update rejestr_wejsc_wyjsc set id_osoby=4
+where idrejestr_wejsc=6 ;
+
+---------------------------------------------------
+
+update trener set imię='Pawel'
+where id_trenera=2 ;
+
+update trener set imię='Tomek'
+where id_trenera=3 ;
+
+update trener set nazwisko='Zniczol'
+where nazwisko='Zniszczol' ;
+
+-- -------------------------------------------------------------------------------
+-- POLECENIA:   3 X DELETE  DO WSZYSTKICH TABEL                                                    
+-- -------------------------------------------------------------------------------
+delete from rejestr_wejsc_wyjsc where idrejestr_wejsc=3
+
+delete from rejestr_wejsc_wyjsc where idrejestr_wejsc=5
+
+delete from rejestr_wejsc_wyjsc where idrejestr_wejsc=7
+
+--------------------------------------------------------
+
+delete from plan_treningu where id_klienta=5;
+
+delete from plan_treningu where id_klienta=4;
+
+delete from plan_treningu where id_planu_treningu=3;
+
+--------------------------------------------------------
+
+delete from trener where nazwisko='Willas';
+
+delete from trener where id_trenera=2;
+
+delete from trener where id_trenera=1;
+
+---------------------------------------------------------
+
+delete from plan_cwiczen where ilosc_seri=2 AND ilosc_powtorzen=25;
+
+delete from plan_cwiczen where id_planu_treningu =2;
+
+delete from plan_cwiczen where id_planu=5;
+
+---------------------------------------------------------
+
+delete from kontakty where email='p@wp.pl';
+
+delete from kontakty where id_kontakt=13;
+
+delete from kontakty where id_kontakt=6;
+
+---------------------------------------------------------
+
+delete from klient where imie='Kacper' AND nazwisko='Dąbrowski' ;
+
+delete from klient where trener=3;
+
+delete from klient where id_klienta=9;
+
+---------------------------------------------------------
+
+delete from grafik where id_trenera=3;
+
+delete from grafik where godz_rozpoczecia=9;
+
+delete from grafik where lp=1;
+
+---------------------------------------------------------
+
+delete from cwiczenia where sprzet='hantle';
+
+delete from cwiczenia where typ='na siłę, na rzeźbę';
+
+delete from cwiczenia where partia_miesni='Łydki';
+
+---------------------------------------------------------
+
+delete from cennik where karnet='karnet 6-miesięczny';
+
+delete from cennik where cena=260;
+
+delete from cennik where id_cennika=3 ;
+
+---------------------------------------------------------
+
+delete from adresy where id_adres=15 ;
+
+delete from adresy where ulica='OGRODOWA' AND kod_pocztowy='22-100' ;
+
+delete from adresy where  kod_pocztowy='45-111' ;
+
+-- -------------------------------------------------------------------------------
+-- USUWANIE STRUKTURY BAZY DANYCH                                            
+-- -------------------------------------------------------------------------------
+
+drop table rejestr_wejsc_wyjsc;
+drop table Plan_cwiczen;
+drop table Plan_treningu;
+drop table Klient;
+drop table Cennik;
+Drop table Cwiczenia;
+drop table Grafik;
+drop table Trener;
+drop table Kontakty;
+drop table Adresy;
+
